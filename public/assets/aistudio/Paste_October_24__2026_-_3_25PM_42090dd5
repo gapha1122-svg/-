@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدرسة بالشهم الابتدائية | بيئة تعليمية رائدة</title>
+    
+    <!-- خط Cairo من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- مكتبة معالجة وقراءة ملفات الإكسل SheetJS الرسمية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #059669;        /* أخضر زمردي راقٍ */
+            --primary-dark: #065f46;
+            --primary-light: #10b981;
+            --secondary: #0f172a;      /* كحلي ملكي داكن */
+            --accent: #f59e0b;         /* لمسة ذهبية مشرقة */
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px -10px rgba(5, 150, 105, 0.15);
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* شريط الأخبار والتنويهات */
+        .ticker-bar {
+            background: linear-gradient(90deg, var(--secondary), #1e293b);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ticker-wrapper {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            white-space: nowrap;
+            animation: ticker 25s linear infinite;
+            display: inline-block;
+        }
+
+        .ticker-bar:hover .ticker-content {
+            animation-play-state: paused;
+            cursor: pointer;
+        }
+
+        /* علامة التنويه في نهاية الشريط */
+        .ticker-badge {
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            margin-right: 1rem;
+            margin-left: 0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+            animation: hideBadgeAfterDelay 0.7s cubic-bezier(0.4, 0, 0.2, 1) 3s forwards;
+        }
+
+        @keyframes hideBadgeAfterDelay {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0; transform: scale(0.85); padding: 0.2rem 0.8rem; margin-right: 1rem; }
+            100% { opacity: 0; visibility: hidden; width: 0; padding: 0; margin: 0; transform: scale(0); }
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* رأس الصفحة والتنقل */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: var(--shadow-sm);
+        }
+        .nav-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--secondary);
+        }
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+        }
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--secondary);
+        }
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 0.4rem;
+        }
+        .nav-link {
+            padding: 0.55rem 0.9rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+        }
+        .nav-link i { color: var(--text-muted); transition: var(--transition); }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: rgba(5, 150, 105, 0.08);
+        }
+        .nav-link.active i, .nav-link:hover i { color: var(--primary); }
+
+        .auth-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .btn-modern {
+            padding: 0.6rem 1.4rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--secondary);
+            border: 1.5px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* المحتوى الرئيسي */
+        main {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            min-height: calc(100vh - 280px);
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الهيرو بانر مع العبارات الديناميكية */
+        .hero-banner {
+            background: radial-gradient(circle at top left, #065f46, var(--secondary));
+            color: #fff;
+            border-radius: var(--radius-lg);
+            padding: 4.5rem 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2.5rem;
+        }
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(16, 185, 129, 0.2);
+            filter: blur(80px);
+            border-radius: 50%;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+        }
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            transition: opacity 0.4s ease;
+        }
+        .hero-desc {
+            font-size: 1.15rem;
+            opacity: 0.92;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.8;
+            transition: opacity 0.4s ease;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* الإحصائيات */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-box {
+            background: var(--surface);
+            padding: 1.8rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            transition: var(--transition);
+        }
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .stat-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+        .stat-students { background: rgba(5, 150, 105, 0.1); color: var(--primary); }
+        .stat-teachers { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; }
+        .stat-classes { background: rgba(245, 158, 11, 0.1); color: var(--accent); }
+        .stat-awards { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+        }
+        .stat-info p {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        /* بوابات تهمك */
+        .quick-portals { margin-bottom: 3rem; }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .portals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .portal-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            padding: 1.8rem 1.2rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .portal-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        .portal-icon {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(5, 150, 105, 0.08);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .portal-card:hover .portal-icon {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.08);
+        }
+        .portal-title {
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: var(--secondary);
+        }
+        .portal-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* شبكة البطاقات (معلمون وطلاب) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .modern-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            padding: 1.8rem;
+            text-align: center;
+            position: relative;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .modern-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: #cbd5e1;
+        }
+        .badge-role {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--primary);
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .card-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.2rem;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        .card-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 0.3rem;
+        }
+        .card-sub {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .card-phone {
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            direction: ltr;
+            background: #f1f5f9;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        /* المزامنة مع مدرستي / نور */
+        .sync-container {
+            background: linear-gradient(135deg, #f0fdf4, #e0f2fe);
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius-lg);
+            padding: 2.2rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+        .sync-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+        .sync-header p {
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 1.5rem;
+            font-size: 0.95rem;
+        }
+        .sync-upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: #fff;
+            padding: 1.8rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .sync-file-input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+        }
+        .sync-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .sync-log-box {
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: none;
+            text-align: right;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        .sync-badge-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+        .badge-added { background: rgba(5, 150, 105, 0.12); color: var(--primary); }
+        .badge-removed { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .badge-total { background: rgba(14, 165, 233, 0.12); color: #0ea5e9; }
+
+        /* استراتيجيات التعلم */
+        .strategies-controls {
+            background: var(--surface);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .strategy-search-wrapper { position: relative; width: 100%; }
+        .strategy-search-wrapper i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        .strategy-search-input {
+            width: 100%;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: #f8fafc;
+        }
+        .strategy-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+        .strategy-category-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .strategy-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.6rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            position: relative;
+        }
+        .strategy-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .strategy-badge-cat {
+            display: inline-block;
+            background: rgba(5, 150, 105, 0.09);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            width: fit-content;
+        }
+        .strategy-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .strategy-brief { color: var(--text-main); font-size: 0.92rem; line-height: 1.7; margin-bottom: 1.2rem; }
+        .strategy-meta-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 0.8rem;
+            font-size: 0.82rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #f1f5f9;
+        }
+        .strategy-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.35rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .strategy-meta-row:last-child { margin-bottom: 0; }
+        .strategy-meta-row i { color: var(--primary); font-size: 0.9rem; }
+        .strategy-modal-detail-box { max-height: 75vh; overflow-y: auto; padding-right: 0.3rem; }
+        .detail-section {
+            margin-bottom: 1.5rem;
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+        }
+        .detail-section h4 { color: var(--secondary); font-size: 1.05rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+        .detail-section p, .detail-section ol { color: var(--text-main); font-size: 0.92rem; line-height: 1.8; padding-right: 1.2rem; }
+        .detail-section ol li { margin-bottom: 0.5rem; }
+
+        /* اللوحة التفاعلية للطلاب */
+        .board-container { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
+        .composer-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-label { display: block; margin-bottom: 0.4rem; font-weight: 700; font-size: 0.9rem; color: var(--secondary); }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: #fcfcfd;
+        }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15); background: #fff; }
+        textarea.form-control { min-height: 110px; resize: vertical; }
+        .posts-stream { display: flex; flex-direction: column; gap: 1.2rem; }
+        .post-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        .post-card:hover { box-shadow: var(--shadow-md); }
+        .post-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .post-author-box { display: flex; align-items: center; gap: 0.8rem; }
+        .post-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+        .post-body { font-size: 1rem; color: var(--text-main); line-height: 1.8; margin-bottom: 1.2rem; }
+        .post-reactions { display: flex; gap: 0.8rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+        .reaction-chip {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .reaction-chip:hover { background: rgba(5, 150, 105, 0.1); color: var(--primary); border-color: var(--primary); }
+
+        /* معرض الصور */
+        .gallery-filter-chips { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .filter-chip {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-chip.active, .filter-chip:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+        }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.5rem; }
+        .gallery-card {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            background: #e2e8f0;
+        }
+        .gallery-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .gallery-card:hover img { transform: scale(1.08); }
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.88), transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.2rem;
+            color: #fff;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .gallery-card:hover .gallery-overlay { opacity: 1; }
+
+        /* النوافذ المنبثقة (Modals) */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            position: relative;
+            animation: zoomModal 0.25s ease-out;
+        }
+        .modal-box-lg { max-width: 680px; }
+        @keyframes zoomModal { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .modal-close-btn:hover { background: #e2e8f0; color: #000; }
+
+        /* الفوتر الاحترافي المحدث */
+        footer {
+            background: var(--secondary);
+            color: #fff;
+            padding: 4rem 1.5rem 2rem;
+            margin-top: 5rem;
+        }
+        .footer-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        .footer-brand p { color: #94a3b8; margin-top: 1rem; max-width: 400px; font-size: 0.95rem; }
+        .footer-links h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+        .footer-links a:hover { color: #fff; padding-right: 5px; }
+
+        /* شارات أرقام الطوارئ في الفوتر */
+        .emergency-list li {
+            margin-bottom: 0.8rem;
+        }
+        .emergency-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.45rem 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: var(--transition);
+        }
+        .emergency-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-4px);
+        }
+        .emerg-badge {
+            direction: ltr;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            padding: 0.15rem 0.6rem;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+        .badge-blue { background: rgba(14, 165, 233, 0.2); color: #7dd3fc; }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .badge-dark { background: rgba(245, 158, 11, 0.2); color: #fde047; }
+
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-title { font-size: 1.9rem; }
+            .hero-banner { padding: 3rem 1.5rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط الإعلانات الحي -->
+    <div class="ticker-bar">
+        <div class="ticker-wrapper">
+            <div class="ticker-content">
+                مرحباً بكم في بوابة مدرسة بالشهم الابتدائية للعام 1448هـ / 2026م • تكريم الطلاب الأوائل يوم الخميس القادم • نرحب بزيارة أولياء الأمور الكرام لمتابعة التحصيل الدراسي
+            </div>
+        </div>
+        <div class="ticker-badge"><i class="fa-solid fa-bullhorn"></i> تنويه مهم</div>
+    </div>
+
+    <!-- رأس الصفحة والتنقل -->
+    <header>
+        <div class="nav-wrapper">
+            <a href="#" class="brand" onclick="navigateTo('home')">
+                <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="brand-text">
+                    <h1>مدرسة بالشهم الابتدائية</h1>
+                    <span>بيئة تعليمية محفزة للريادة والإبداع</span>
+                </div>
+            </a>
+
+            <ul class="nav-links">
+                <li><a class="nav-link active" data-page="home"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+                <li><a class="nav-link" data-page="teachers"><i class="fa-solid fa-chalkboard-user"></i> المعلمون</a></li>
+                <li><a class="nav-link" data-page="students"><i class="fa-solid fa-user-graduate"></i> لوحة الشرف</a></li>
+                <li><a class="nav-link" data-page="strategies"><i class="fa-solid fa-lightbulb"></i> استراتيجيات التعلم</a></li>
+                <li><a class="nav-link" data-page="gallery"><i class="fa-solid fa-images"></i> المعرض</a></li>
+                <li><a class="nav-link" data-page="board"><i class="fa-solid fa-comments"></i> منبر الطلاب</a></li>
+                <li id="dashNavItem" style="display: none;"><a class="nav-link" data-page="dashboard"><i class="fa-solid fa-sliders"></i> الإدارة</a></li>
+            </ul>
+
+            <div class="auth-actions" id="userAuthContainer">
+                <button class="btn-modern btn-primary" onclick="openModal('authModal')">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> دخول
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى والصفحات -->
+    <main>
+        <!-- 1. الرئيسية مع العبارة التحفيزية المتجددة -->
+        <section id="home" class="page active">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-tag"><i class="fa-solid fa-award"></i> مدرسة متميزة ومبتكرة</div>
+                    <h2 class="hero-title" id="heroDynamicTitle">نصنع أجيال المستقبل بتعليم نوعي وقيم أصيلة</h2>
+                    <p class="hero-desc" id="heroDynamicDesc">في مدرسة بالشهم الابتدائية نحرص على غرس مهارات القرن الحادي والعشرين وبناء شخصية متوازنة تعتز بدينها ووطنها.</p>
+                    <div class="hero-buttons">
+                        <button class="btn-modern btn-primary" onclick="navigateTo('strategies')"><i class="fa-solid fa-lightbulb"></i> استكشف استراتيجيات التدريس</button>
+                        <button class="btn-modern btn-outline" style="color:#fff; border-color: rgba(255,255,255,0.4);" onclick="navigateTo('gallery')"><i class="fa-regular fa-eye"></i> جولة في المدرسة</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إحصائيات المدرسة الحية -->
+            <div class="stats-container" id="statsHolder"></div>
+
+            <!-- بوابات تهمك -->
+            <div class="quick-portals">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-compass" style="color:var(--primary);"></i> بوابات تهمك</h2>
+                </div>
+                <div class="portals-grid">
+                    <a href="https://schools.madrasati.sa" target="_blank" class="portal-card">
+                        <div class="portal-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                        <div class="portal-title">منصة مدرستي</div>
+                        <div class="portal-sub">الواجبات والفصول الافتراضية</div>
+                    </a>
+
+                    <a href="https://noor.moe.gov.sa" target="_blank" class="portal-card">
+                        <div class="portal-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+                        <div class="portal-title">نظام نور</div>
+                        <div class="portal-sub">النتائج والتقارير الأكاديمية</div>
+                    </a>
+
+                    <a href="https://sahl.io/sa" target="_blank" class="portal-card">
+                        <div class="portal-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+                        <div class="portal-title">منصة سهل التعليمية</div>
+                        <div class="portal-sub">شروحات المناهج والدروس الرقمية</div>
+                    </a>
+
+                    <div class="portal-card" onclick="openAddPerson('teacher')">
+                        <div class="portal-icon" style="background:rgba(245,158,11,0.1); color:var(--accent);"><i class="fa-solid fa-user-plus"></i></div>
+                        <div class="portal-title">تسجيل المعلمين</div>
+                        <div class="portal-sub">الانضمام لطاقم المعلمين بالمدرسة</div>
+                    </div>
+
+                    <a href="#" class="portal-card" onclick="alert('سيبدأ التسجيل في الأنشطة للفصل القادم قريباً')">
+                        <div class="portal-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="portal-title">النشاط الطلابي</div>
+                        <div class="portal-sub">الاشتراك في الأندية المدرسية</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. قسم استراتيجيات التعلم -->
+        <section id="strategies" class="page">
+            <div class="section-header">
+                <div>
+                    <h2><i class="fa-solid fa-lightbulb" style="color:var(--accent);"></i> دليل استراتيجيات التعلم النشط</h2>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">مرجع شامل لمعلمي مدرسة بالشهم لاختيار وتطبيق أحدث استراتيجيات التدريس بكفاءة</p>
+                </div>
+            </div>
+
+            <div class="strategies-controls">
+                <div class="strategy-search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="strategySearchInput" class="strategy-search-input" placeholder="ابحث باسم الاستراتيجية، المادة، أو نوع النشاط (مثال: عصف ذهني، عمل جماعي، تقويم)..." oninput="handleStrategySearch()">
+                </div>
+                <div class="strategy-category-filters" id="strategyFilterBtns">
+                    <button class="filter-chip active" onclick="filterStrategies('all', this)">🌟 كافة الاستراتيجيات</button>
+                    <button class="filter-chip" onclick="filterStrategies('team', this)">👥 العمل الجماعي والتعاوني</button>
+                    <button class="filter-chip" onclick="filterStrategies('thinking', this)">🧠 التفكير الناقد والإبداع</button>
+                    <button class="filter-chip" onclick="filterStrategies('summary', this)">📊 الاستكشاف وتلخيص المفاهيم</button>
+                    <button class="filter-chip" onclick="filterStrategies('assessment', this)">⏱️ التقويم الختامي والغلق</button>
+                </div>
+            </div>
+
+            <div class="cards-grid" id="strategiesGrid"></div>
+        </section>
+
+        <!-- 3. المعلمون -->
+        <section id="teachers" class="page">
+            <div class="section-header">
+                <div>
+                    <h2><i class="fa-solid fa-chalkboard-user" style="color:var(--primary);"></i> نخبة المعلمين</h2>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">كفاءات متميزة تسعى لبناء جيل طموح</p>
+                </div>
+                <div>
+                    <button class="btn-modern btn-primary" onclick="openAddPerson('teacher')"><i class="fa-solid fa-plus"></i> إضافة معلم</button>
+                </div>
+            </div>
+            <div class="cards-grid" id="teachersList"></div>
+        </section>
+
+        <!-- 4. لوحة شرف الطلاب -->
+        <section id="students" class="page">
+            <div class="section-header">
+                <div>
+                    <h2><i class="fa-solid fa-trophy" style="color:var(--accent);"></i> لوحة شرف المتميزين</h2>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">نفخر بفرساننا وأبطالنا في التحصيل والسلوك</p>
+                </div>
+                <div>
+                    <button class="btn-modern btn-primary" onclick="openAddPerson('student')"><i class="fa-solid fa-plus"></i> إضافة متفوق</button>
+                </div>
+            </div>
+            <div class="cards-grid" id="studentsList"></div>
+        </section>
+
+        <!-- 5. معرض الصور -->
+        <section id="gallery" class="page">
+            <div class="section-header">
+                <div>
+                    <h2><i class="fa-solid fa-camera-retro" style="color:var(--primary);"></i> نبض المدرسة بالصور</h2>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">لحظات من الفرح والتعلم والإنجاز</p>
+                </div>
+            </div>
+
+            <div class="gallery-filter-chips">
+                <button class="filter-chip active" onclick="filterGallery('all', this)">الكل</button>
+                <button class="filter-chip" onclick="filterGallery('activities', this)">أنشطة وفعاليات</button>
+                <button class="filter-chip" onclick="filterGallery('events', this)">مناسبات وتكريم</button>
+                <button class="filter-chip" onclick="filterGallery('classes', this)">الفصول الدراسية</button>
+            </div>
+
+            <div class="gallery-grid" id="galleryContainer"></div>
+        </section>
+
+        <!-- 6. اللوحة التفاعلية للطلاب -->
+        <section id="board" class="page">
+            <div class="section-header">
+                <div>
+                    <h2><i class="fa-solid fa-comments" style="color:var(--primary);"></i> منبر إبداع الطلاب</h2>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">مساحتك للتعبير عن شكرك، أفكارك، وإنجازاتك</p>
+                </div>
+            </div>
+
+            <div class="board-container">
+                <div class="composer-card">
+                    <h3 style="font-size:1.15rem; margin-bottom:1rem; color:var(--secondary);"><i class="fa-solid fa-feather-pointed"></i> أضف مشاركتك</h3>
+                    <form onsubmit="handlePostSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label">اسمك الكريم:</label>
+                            <input type="text" id="postAuthorInput" class="form-control" placeholder="مثال: تركي محمد" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">الصف:</label>
+                            <select id="postGradeInput" class="form-control" required>
+                                <option value="الصف الأول">الصف الأول</option>
+                                <option value="الصف الثاني">الصف الثاني</option>
+                                <option value="الصف الثالث">الصف الثالث</option>
+                                <option value="الصف الرابع">الصف الرابع</option>
+                                <option value="الصف الخامس">الصف الخامس</option>
+                                <option value="الصف السادس" selected>الصف السادس</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">المحتوى:</label>
+                            <textarea id="postContentInput" class="form-control" placeholder="اكتب كلمتك هنا بحب..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-modern btn-primary" style="width:100%;">
+                            <i class="fa-solid fa-paper-plane"></i> نشر الكلمة
+                        </button>
+                    </form>
+                </div>
+
+                <div class="posts-stream" id="postsList"></div>
+            </div>
+        </section>
+
+        <!-- 7. لوحة التحكم للإدارة -->
+        <section id="dashboard" class="page">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-sliders" style="color:var(--primary);"></i> لوحة التحكم والإدارة</h2>
+            </div>
+
+            <!-- حاوية المزامنة التلقائية مع مدرستي / نور -->
+            <div class="sync-container">
+                <div class="sync-header">
+                    <h3><i class="fa-solid fa-rotate" style="color:var(--primary);"></i> المزامنة الذكية مع مدرستي ونظام نور</h3>
+                    <p>قم برفع كشف الطلاب المصدر من منصة مدرستي أو نظام نور بصيغة (Excel أو CSV) ليتم تحديث الطلاب، وإضافة المستجدين، واستبعاد المنقولين، وتعديل إحصائية الفصول تلقائياً!</p>
+                </div>
+
+                <div class="sync-upload-box">
+                    <input type="file" id="madrasatiFileInput" class="sync-file-input" accept=".xlsx, .xls, .csv">
+                    <div class="sync-actions">
+                        <button class="btn-modern btn-primary" onclick="syncFromMadrasatiExcel()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> بدء المزامنة والتحديث الفوري
+                        </button>
+                        <button class="btn-modern btn-outline" onclick="downloadSampleSheet()">
+                            <i class="fa-solid fa-file-excel" style="color:var(--primary);"></i> تحميل نموذج كشف تجريبي
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تقرير المزامنة المباشر -->
+                <div class="sync-log-box" id="syncReportBox">
+                    <h4 style="font-weight:800; color:var(--secondary); margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-circle-check" style="color:var(--primary);"></i> تقرير المزامنة والتحديث:
+                    </h4>
+                    <div id="syncReportSummary" style="font-size:0.92rem; line-height:1.8;"></div>
+                </div>
+            </div>
+
+            <div class="modern-card" style="text-align: right;">
+                <h3 style="margin-bottom: 1rem;">تحديث الأرقام والإحصائيات العامة يدوياً:</h3>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                    <div>
+                        <label class="form-label">عدد الطلاب:</label>
+                        <input type="number" id="editStudents" class="form-control">
+                    </div>
+                    <div>
+                        <label class="form-label">عدد المعلمين:</label>
+                        <input type="number" id="editTeachers" class="form-control">
+                    </div>
+                    <div>
+                        <label class="form-label">عدد الفصول:</label>
+                        <input type="number" id="editClasses" class="form-control">
+                    </div>
+                </div>
+                <button class="btn-modern btn-primary" style="margin-top: 1.5rem;" onclick="saveDashboardStats()">
+                    <i class="fa-solid fa-floppy-disk"></i> حفظ التحديثات
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- نافذة تفاصيل الاستراتيجية ودليل تطبيقها -->
+    <div class="modal" id="strategyModal">
+        <div class="modal-box modal-box-lg">
+            <button class="modal-close-btn" onclick="closeModal('strategyModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div id="strategyModalContent"></div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div class="modal" id="authModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="font-size:1.4rem; color:var(--secondary); margin-bottom: 0.5rem;">تسجيل الدخول للمدرسة</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1.5rem;">أدخل حسابك للوصول إلى المميزات المخصصة</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">اسم المستخدم:</label>
+                    <input type="text" id="loginUser" class="form-control" placeholder="اسم المستخدم" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور:</label>
+                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+                </div>
+                <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:1rem;">(حساب المدير للتجربة: <b>admin</b> وكلمة المرور: <b>admin123</b>)</p>
+                <button type="submit" class="btn-modern btn-primary" style="width:100%;">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة معلم / متفوق -->
+    <div class="modal" id="addPersonModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('addPersonModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="addPersonTitle" style="font-size:1.3rem; margin-bottom: 1rem;">إضافة جديد</h3>
+            <form onsubmit="handleAddPersonSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">الاسم الكامل:</label>
+                    <input type="text" id="newPersonName" class="form-control" placeholder="الاسم الثلاثي أو الرباعي" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="newPersonRoleLabel">التخصص / الصف:</label>
+                    <input type="text" id="newPersonRole" class="form-control" placeholder="مثال: معلم لغتي أو الصف السادس" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رقم الجوال (اختياري للمعلمين):</label>
+                    <input type="tel" id="newPersonPhone" class="form-control" placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">معلومات وإنجازات:</label>
+                    <input type="text" id="newPersonInfo" class="form-control" placeholder="نبذة مختصرة عن الخبرة أو الإنجاز">
+                </div>
+                <button type="submit" class="btn-modern btn-primary" style="width:100%;">حفظ وإضافة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة المطور مع قسم أرقام الطوارئ والتواصل المهمة -->
+    <footer>
+        <div class="footer-grid">
+            <!-- 1. نبذة عن المدرسة -->
+            <div class="footer-brand">
+                <div class="brand" style="color:#fff;">
+                    <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="brand-text">
+                        <h2 style="font-size:1.3rem;">مدرسة بالشهم الابتدائية</h2>
+                        <span style="color:var(--primary-light);">المملكة العربية السعودية</span>
+                    </div>
+                </div>
+                <p>صرح تعليمي يعنى بتنشئة الطلاب على حب العلم، والأخلاق الفاضلة، والمساهمة الفاعلة في نهضة الوطن الغالي.</p>
+            </div>
+
+            <!-- 2. روابط سريعة -->
+            <div class="footer-links">
+                <h4><i class="fa-solid fa-link"></i> روابط سريعة</h4>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('home')">الرئيسية</a></li>
+                    <li><a href="#" onclick="navigateTo('strategies')">استراتيجيات التعلم</a></li>
+                    <li><a href="#" onclick="navigateTo('teachers')">الكادر التعليمي</a></li>
+                    <li><a href="#" onclick="navigateTo('students')">قائمة المتفوقين</a></li>
+                    <li><a href="#" onclick="navigateTo('board')">مشاركات الطلاب</a></li>
+                </ul>
+            </div>
+
+            <!-- 3. تواصل مع إدارة المدرسة -->
+            <div class="footer-links">
+                <h4><i class="fa-solid fa-address-book"></i> تواصل مع المدرسة</h4>
+                <ul>
+                    <li><i class="fa-solid fa-phone" style="margin-left:0.5rem; color:var(--primary-light);"></i> 017XXXXXXX</li>
+                    <li><i class="fa-solid fa-envelope" style="margin-left:0.5rem; color:var(--primary-light);"></i> info@balshaham.edu.sa</li>
+                    <li><i class="fa-solid fa-location-dot" style="margin-left:0.5rem; color:var(--primary-light);"></i> منطقة الباحة - بالشهم</li>
+                    <li><i class="fa-solid fa-clock" style="margin-left:0.5rem; color:var(--primary-light);"></i> الأحد - الخميس (7:00 ص - 1:30 م)</li>
+                </ul>
+            </div>
+
+            <!-- 4. أرقام الطوارئ والجهات الرسمية المهمة (جديد) -->
+            <div class="footer-links">
+                <h4><i class="fa-solid fa-phone-volume" style="color:var(--accent);"></i> أرقام طوارئ مهمة</h4>
+                <ul class="emergency-list">
+                    <li>
+                        <a href="tel:19996" class="emergency-link">
+                            <span><i class="fa-solid fa-building-columns" style="color:var(--primary-light); margin-left:0.4rem;"></i> مركز تواصل وزارة التعليم</span>
+                            <span class="emerg-badge badge-green">19996</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:997" class="emergency-link">
+                            <span><i class="fa-solid fa-truck-medical" style="color:#f87171; margin-left:0.4rem;"></i> الهلال الأحمر السعودي</span>
+                            <span class="emerg-badge badge-red">997</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:998" class="emergency-link">
+                            <span><i class="fa-solid fa-fire-extinguisher" style="color:#fb923c; margin-left:0.4rem;"></i> الدفاع المدني</span>
+                            <span class="emerg-badge badge-orange">998</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:999" class="emergency-link">
+                            <span><i class="fa-solid fa-shield-halved" style="color:#38bdf8; margin-left:0.4rem;"></i> الدوريات الأمنية</span>
+                            <span class="emerg-badge badge-blue">999</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:911" class="emergency-link">
+                            <span><i class="fa-solid fa-triangle-exclamation" style="color:#facc15; margin-left:0.4rem;"></i> العمليات الأمنية الموحدة</span>
+                            <span class="emerg-badge badge-dark">911</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            جميع الحقوق محفوظة &copy; 2026 مدرسة بالشهم الابتدائية.
+        </div>
+    </footer>
+
+    <!-- المنطق والبرمجة (JavaScript) -->
+    <script>
+        function sanitize(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // قائمة العبارات التحفيزية
+        const motivationalQuotes = [
+            {
+                title: "نصنع أجيال المستقبل بتعليم نوعي وقيم أصيلة",
+                desc: "في مدرسة بالشهم الابتدائية نحرص على غرس مهارات القرن الحادي والعشرين وبناء شخصية متوازنة تعتز بدينها ووطنها."
+            },
+            {
+                title: "في بالشهم نرعى شغف المعرفة ونبني قادة الغد",
+                desc: "نلهم عقول طلابنا بالاستكشاف والتفكير الإبداعي، لنعدهم ليكونوا صناع أثر في مسيرة الوطن المشرقة."
+            },
+            {
+                title: "بيئة تعليمية ملهمة تصقل المواهب وتزرع روح الابتكار",
+                desc: "نؤمن بأن كل طالب يملك طاقة استثنائية، ومهمتنا تمكينه وتوجيه شغفه نحو القمة والتميز."
+            },
+            {
+                title: "معاً نبني الهمم، ونضيء دروب النجاح لفرسان المستقبل",
+                desc: "شراكة متكاملة بين المعلم والأسرة لغرس القيم التربوية الرفيعة وتحقيق أعلى معايير التحصيل العلمي."
+            },
+            {
+                title: "خطوة اليوم في فصولنا تصنع مسيرة الغد لوطننا المعطاء",
+                desc: "غايتنا تعليم نوعي يغرس حب التعلم المستمر والشغف بالبحث والتفكير البنّاء منذ الخطوات الأولى."
+            },
+            {
+                title: "بالعلم نسمو، وبالأخلاق نرتقي، وبإبداع طلابنا نفخر",
+                desc: "صرح تعليمي يعتني برعاية الموهبة، وبناء الثقة بالنفس، وترسيخ روح المبادرة والعمل بروح الفريق."
+            }
+        ];
+
+        function applyRandomMotivationalQuote() {
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            const quote = motivationalQuotes[randomIndex];
+            const titleElem = document.getElementById('heroDynamicTitle');
+            const descElem = document.getElementById('heroDynamicDesc');
+            if (titleElem && descElem) {
+                titleElem.style.opacity = '0';
+                descElem.style.opacity = '0';
+                setTimeout(() => {
+                    titleElem.textContent = quote.title;
+                    descElem.textContent = quote.desc;
+                    titleElem.style.opacity = '1';
+                    descElem.style.opacity = '0.92';
+                }, 150);
+            }
+        }
+
+        // قاعدة بيانات استراتيجيات التدريس
+        const learningStrategies = [
+            {
+                id: 1,
+                name: "فكر - زاوج - شارك (Think-Pair-Share)",
+                icon: "fa-users-between-lines",
+                cat: "team",
+                catLabel: "👥 عمل جماعي وتعاوني",
+                brief: "استراتيجية تفاعلية سريعة تمنح كل طالب فرصة التفكير الفردي أولاً ثم مناقشة زميله قبل المشاركة أمام الصف.",
+                time: "3 إلى 5 دقائق",
+                bestFor: "الأسئلة الاستكشافية، استخراج الأفكار في نصوص القراءة، المسائل الرياضية اللفظية، وحصص العلوم.",
+                steps: [
+                    "<b>1. فكّر (Think):</b> يطرح المعلم سؤالاً ويوجه الطلاب للتفكير بمفردهم وكتابة نقطة واحدة في ورقة (دقيقة واحدة).",
+                    "<b>2. زاوج (Pair):</b> يلتفت كل طالب إلى زميله المجاور ويتبادلان الأفكار ويتفقان على إجابة مشتركة متكاملة (دقيقة واحدة).",
+                    "<b>3. شارك (Share):</b> يطلب المعلم من بعض الثنائيات مشاركة ما اتفقوا عليه أمام زملائهم مع تعزيز التنوع."
+                ],
+                teacherRole: "إدارة الوقت بدقة والتأكد من انخراط جميع الطلاب وليس فقط المتميزين.",
+                tip: "ممتازة جداً لإشراك الطلاب الخجولين لأنها توفر لهم بيئة آمنة للتحدث أولاً مع زميل واحد قبل الصف بأكمله."
+            },
+            {
+                id: 2,
+                name: "الرؤوس المرقمة (Numbered Heads Together)",
+                icon: "fa-arrow-down-1-9",
+                cat: "team",
+                catLabel: "👥 عمل جماعي وتعاوني",
+                brief: "استراتيجية تضمن مسؤولية كل عضو داخل المجموعة، فلا يعتمد أحد على زميله في الحل.",
+                time: "5 إلى 8 دقائق",
+                bestFor: "مراجعة وحل التمارين الصعبة، تثبيت المفاهيم العلمية والقواعد اللغوية.",
+                steps: [
+                    "يقسم المعلم الصف لمجموعات من 4 طلاب، وكل طالب في المجموعة يأخذ رقماً من (1 إلى 4).",
+                    "يطرح المعلم السؤال ويطلب من المجموعات التشاور والتأكد من أن <b>كل فرد في المجموعة</b> يعرف الإجابة.",
+                    "ينادي المعلم رقماً عشوائياً (مثلاً: أصحاب الرقم 3)، فيقف الطلاب أصحاب الرقم 3 فقط من كل مجموعة للإجابة وتدوين النقاط."
+                ],
+                teacherRole: "مراقبة نقاش المجموعات والتأكد من أن الطالب المتميز يدرب زملاءه بدلاً من الإجابة بمفرده.",
+                tip: "استخدم بطاقات أرقام يضعها الطلاب على طاولاتهم لزيادة الحماس والتنافس الإيجابي."
+            },
+            {
+                id: 3,
+                name: "جدول التعلم (K-W-L Chart)",
+                icon: "fa-table-columns",
+                cat: "summary",
+                catLabel: "📊 استكشاف وتلخيص",
+                brief: "مخطط بصري رائع يربط المعرفة السابقة للطلاب بما يرغبون في معرفته وما تم تحقيقه فعلياً.",
+                time: "على مدار الحصة (البداية والنهاية)",
+                bestFor: "بداية الوحدات الدراسية الجديدة في العلوم، الدراسات الاجتماعية، ونصوص الاستماع.",
+                steps: [
+                    "يرسم المعلم جدولاً من 3 أعمدة على السبورة: (K: ماذا أعرف؟ | W: ماذا أريد أن أعرف؟ | L: ماذا تعلمت؟).",
+                    "في بداية الدرس يملأ الطلاب العمودين الأول والثاني لتنشيط معلوماتهم وتحديد شغفهم.",
+                    "في ختام الدرس أو الوحدة، يملأ الطلاب عمود (ماذا تعلمت؟) كتقييم ختامي للتحصيل والفهم."
+                ],
+                teacherRole: "توجيه الطلاب نحو طرح أسئلة ذكية في عمود (ماذا أريد أن أعرف؟).",
+                tip: "يمكن توزيع ورقة عمل مصغرة للجدول يحتفظ بها كل طالب في ملف إنجازه."
+            },
+            {
+                id: 4,
+                name: "الكرسي الساخن (Hot Seat)",
+                icon: "fa-chair",
+                cat: "thinking",
+                catLabel: "🧠 تفكير ناقد وحوار",
+                brief: "استراتيجية قائمة على تمثيل الأدوار وطرح الأسئلة الذكية على طالب يتقمص شخصية أو فكرة معينة.",
+                time: "5 إلى 10 دقائق",
+                bestFor: "شخصيات التاريخ الإسلامي والوطني، مفاهيم العلوم، ودروس التربية الإسلامية.",
+                steps: [
+                    "يوضع كرسي في مقدمة الصف في مواجهة الطلاب.",
+                    "يجلس الطالب المتطوع على الكرسي متقمصاً شخصية الدرس أو دور 'الخبير الصغير'.",
+                    "يوجه بقية طلاب الصف أسئلة ذكية ومباشرة للطالب على الكرسي الساخن وعليه الإجابة بناءً على ما تعلمه."
+                ],
+                teacherRole: "تنظيم الأسئلة والتدخل في حال وجود سؤال خارج السياق بلباقة.",
+                tip: "ابدأ بالطالب المبادر لتشجيع البقية."
+            },
+            {
+                id: 5,
+                name: "البطاقات المروحية (Fan-N-Pick)",
+                icon: "fa-clone",
+                cat: "team",
+                catLabel: "👥 عمل جماعي وتعاوني",
+                brief: "نشاط حركي مسلٍ يتيح للطلاب تدوير بطاقات الأسئلة وإدارتها فيما بينهم بروح الفريق.",
+                time: "6 إلى 8 دقائق",
+                bestFor: "مراجعة المفردات الإنجليزية، مسائل الرياضيات الحسابية، وحفظ ومراجعة معاني الكلمات.",
+                steps: [
+                    "تقسم المجموعة لأربعة طلاب: (الطالب 1: يمسك البطاقات على شكل مروحة ويقول: اختر بطاقة).",
+                    "(الطالب 2: يسحب البطاقة ويقرأ السؤال بصوت واضح ويمنح زملاءه مهلة 5 ثوانٍ).",
+                    "(الطالب 3: يجيب عن السؤال).",
+                    "(الطالب 4: يقيم الإجابة ويشجع زميله أو يصحح له بلطف). ثم تتبادل الأدوار."
+                ],
+                teacherRole: "إعداد بطاقات الأسئلة مسبقاً وتوزيعها على الطاولات.",
+                tip: "هذه الاستراتيجية مفضلة جداً لطلاب الصفوف الأولية لأنها تشبه الألعاب التفاعلية."
+            },
+            {
+                id: 6,
+                name: "دقيقة واحدة للكتابة (One-Minute Paper)",
+                icon: "fa-stopwatch",
+                cat: "assessment",
+                catLabel: "⏱️ تقويم ختامي وغلق",
+                brief: "أسرع وأدق وسيلة تقويم تكويني لمعرفة ما إذا كانت أهداف الحصة قد وصلت لجميع الطلاب.",
+                time: "دقيقة إلى دقيقتين في نهاية الحصة",
+                bestFor: "غلق أي حصة دراسية في جميع المواد بدون استثناء.",
+                steps: [
+                    "في آخر دقيقتين من الحصة، يوزع المعلم قصاصات صغيرة أو يطلب دفتر الملاحظات.",
+                    "يطرح المعلم سؤالين محددين: (ما أهم فكرة تعلمتها اليوم؟) و (ما النقطة التي لا تزال غامضة بالنسبة لك؟).",
+                    "يكتب الطالب إجابته في دقيقة واحدة ويسلمها للمعلم عند الخروج من الفصل."
+                ],
+                teacherRole: "قراءة القصاصات بعد الحصة لتحديد النقاط التي تحتاج إعادة شرح في الحصة القادمة.",
+                tip: "لا تضع درجات على هذه الورقة لتشجيع الطلاب على الصدق في كتابة النقاط التي لم يفهموها."
+            },
+            {
+                id: 7,
+                name: "القبعات الست للتفكير (Six Thinking Hats)",
+                icon: "fa-hat-cowboy",
+                cat: "thinking",
+                catLabel: "🧠 تفكير ناقد وحوار",
+                brief: "استراتيجية إدوارد دي بونو لتدريب الطلاب على النظر للموضوع من 6 زوايا تفكير مختلفة وشاملة.",
+                time: "15 إلى 20 دقيقة",
+                bestFor: "مواضيع التعبير والإنشاء، حل المشكلات السلوكية والبيئية، ومناقشة القضايا الاجتماعية.",
+                steps: [
+                    "<b>البيضاء:</b> جمع الحقائق والأرقام والمعلومات المتاحة.",
+                    "<b>الحمراء:</b> التعبير عن المشاعر والانطباعات العاطفية دون تبرير.",
+                    "<b>السوداء:</b> التفكير السلبي، المخاطر، والمحاذير المحتملة.",
+                    "<b>الصفراء:</b> التفكير الإيجابي، الفوائد، ونقاط القوة والفرص.",
+                    "<b>الخضراء:</b> الإبداع، طرح أفكار وبدائل جديدة غير مألوفة.",
+                    "<b>الزرقاء:</b> إدارة التفكير، تلخيص النتائج، وصياغة القرارات."
+                ],
+                teacherRole: "توجيه الطلاب لعدم الخلط بين القبعات وتوجيه كل مجموعة بارتداء قبعة محددة.",
+                tip: "استخدم قبعات ملونة حقيقية أو شارات ملونة لطلاب المرحلة الابتدائية لجعلها مشوقة بصرياً."
+            },
+            {
+                id: 8,
+                name: "خرائط المفاهيم والروابط (Concept Mapping)",
+                icon: "fa-diagram-project",
+                cat: "summary",
+                catLabel: "📊 استكشاف وتلخيص",
+                brief: "تمثيل بصري منظم يوضح العلاقات والروابط الهرمية بين المفهوم الرئيسي والمفاهيم الفرعية.",
+                time: "10 إلى 15 دقيقة",
+                bestFor: "تصنيفات العلوم، أقسام الكلمة في لغتي، وفروع الفقه والتوحيد.",
+                steps: [
+                    "يضع الطالب المفهوم العام في دائرة أو مربع في أعلى أو وسط الصفحة.",
+                    "تتفرع منه خطوط أو أسهم إلى المفاهيم الفرعية ذات الصلة.",
+                    "يكتب الطالب كلمات ربط على الأسهم (مثل: ينقسم إلى، يحتوي على، يتكون من)."
+                ],
+                teacherRole: "البدء بنماذج شبه مكتملة وتكليف الطلاب بإكمال الفراغات في البداية لتسهيل الاستيعاب.",
+                tip: "تساعد الخرائط الذهنية الطلاب البصريين على تذكر واسترجاع المعلومات بسرعة فائقة."
+            }
+        ];
+
+        let currentStrategyCategory = 'all';
+
+        function renderStrategies(filter = 'all', searchQuery = '') {
+            const container = document.getElementById('strategiesGrid');
+            let items = learningStrategies;
+            if (filter !== 'all') items = items.filter(s => s.cat === filter);
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase();
+                items = items.filter(s => 
+                    s.name.toLowerCase().includes(q) || 
+                    s.brief.toLowerCase().includes(q) || 
+                    s.bestFor.toLowerCase().includes(q)
+                );
+            }
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding:3rem; background:white; border-radius:var(--radius-md); border:1px dashed var(--border-color);">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size:2.5rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+                        <h3 style="color:var(--secondary); margin-bottom:0.5rem;">لم يتم العثور على استراتيجية مطابقة</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">جرب كلمات بحث أخرى أو اختر تصنيفاً مختلفاً من الأعلى.</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = items.map(s => `
+                <div class="strategy-card">
+                    <div>
+                        <span class="strategy-badge-cat">${s.catLabel}</span>
+                        <h3 class="strategy-title"><i class="fa-solid ${s.icon}" style="color:var(--primary);"></i> ${sanitize(s.name)}</h3>
+                        <p class="strategy-brief">${sanitize(s.brief)}</p>
+                        <div class="strategy-meta-box">
+                            <div class="strategy-meta-row"><i class="fa-regular fa-clock"></i> <span>الوقت: <b>${sanitize(s.time)}</b></span></div>
+                            <div class="strategy-meta-row"><i class="fa-solid fa-bullseye"></i> <span>الأنسب لـ: <b>${sanitize(s.bestFor)}</b></span></div>
+                        </div>
+                    </div>
+                    <button class="btn-modern btn-primary" style="width:100%; font-size:0.85rem;" onclick="openStrategyModal(${s.id})">
+                        <i class="fa-solid fa-book-open"></i> خطوات التطبيق ودليل المعلم
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function filterStrategies(cat, btn) {
+            currentStrategyCategory = cat;
+            document.querySelectorAll('#strategyFilterBtns .filter-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderStrategies(currentStrategyCategory, document.getElementById('strategySearchInput').value);
+        }
+
+        function handleStrategySearch() {
+            renderStrategies(currentStrategyCategory, document.getElementById('strategySearchInput').value);
+        }
+
+        function openStrategyModal(id) {
+            const s = learningStrategies.find(item => item.id === id);
+            if (!s) return;
+            document.getElementById('strategyModalContent').innerHTML = `
+                <div style="margin-bottom:1.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+                    <span class="strategy-badge-cat">${s.catLabel}</span>
+                    <h2 style="color:var(--secondary); font-size:1.45rem; display:flex; align-items:center; gap:0.6rem; margin-top:0.4rem;">
+                        <i class="fa-solid ${s.icon}" style="color:var(--primary);"></i> ${sanitize(s.name)}
+                    </h2>
+                    <p style="color:var(--text-muted); font-size:0.92rem; margin-top:0.3rem;">${sanitize(s.brief)}</p>
+                </div>
+                <div class="strategy-modal-detail-box">
+                    <div class="detail-section">
+                        <h4><i class="fa-solid fa-lightbulb" style="color:var(--accent);"></i> متى تختار هذه الاستراتيجية لدرسك؟</h4>
+                        <p>${sanitize(s.bestFor)} (تستغرق عادةً <b>${sanitize(s.time)}</b> داخل الحصة).</p>
+                    </div>
+                    <div class="detail-section">
+                        <h4><i class="fa-solid fa-list-check" style="color:var(--primary);"></i> خطوات التطبيق العملي داخل الفصل:</h4>
+                        <ol>${s.steps.map(step => `<li>${step}</li>`).join('')}</ol>
+                    </div>
+                    <div class="detail-section" style="border-right-color:#0ea5e9;">
+                        <h4><i class="fa-solid fa-user-tie" style="color:#0ea5e9;"></i> دور المعلم أثناء التنفيذ:</h4>
+                        <p>${sanitize(s.teacherRole)}</p>
+                    </div>
+                    <div class="detail-section" style="border-right-color:var(--accent);">
+                        <h4><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent);"></i> نصيحة ذهبية لطلاب المرحلة الابتدائية:</h4>
+                        <p>${sanitize(s.tip)}</p>
+                    </div>
+                </div>
+            `;
+            openModal('strategyModal');
+        }
+
+        // قاعدة البيانات والمزامنة
+        const initialData = {
+            stats: { students: 480, teachers: 32, classes: 18, awards: 14 },
+            teachers: [
+                { id: 1, name: 'سعد بن علي الغامدي', role: 'معلم لغتي الجميلة', info: 'خبرة 14 عاماً في التأسيس اللغوي', phone: '0501234567' },
+                { id: 2, name: 'فهد إبراهيم الزهراني', role: 'معلم الرياضيات', info: 'مدرب الحساب الذهني والأولمبياد', phone: '0559876543' },
+                { id: 3, name: 'خالد عبدالله القرني', role: 'معلم العلوم والابتكار', info: 'مشرف نادي العلوم الصغير', phone: '0543210987' }
+            ],
+            students: [
+                { id: 1, name: 'ريان أحمد الغامدي', role: 'الصف السادس', info: 'المركز الأول في مسابقة القرآن الكريم' },
+                { id: 2, name: 'سعود فيصل العمري', role: 'الصف الخامس', info: 'الفائز ببطولة الرياضيات الذكية' },
+                { id: 3, name: 'محمد تركي الشهري', role: 'الصف الرابع', info: 'الطالب المثالي للالتزام والانضباط' }
+            ],
+            posts: [
+                { id: 1, author: 'تركي خالد', grade: 'الصف السادس', content: 'شكراً لجميع معلمينا الأعزاء على جهودهم الرائعة معنا طوال العام.', likes: 12 },
+                { id: 2, author: 'عبدالعزيز عمر', grade: 'الصف الخامس', content: 'اليوم الرياضي كان قمة في الحماس والتنظيم! فخور بمدرستي.', likes: 8 }
+            ],
+            gallery: [
+                { title: 'معرض العلوم السنوي', cat: 'activities', img: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=80' },
+                { title: 'تكريم فرسان التفوق', cat: 'events', img: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=700&q=80' },
+                { title: 'البيئة الصفية التفاعلية', cat: 'classes', img: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=700&q=80' },
+                { title: 'دوري كرة القدم المدرسي', cat: 'activities', img: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=700&q=80' }
+            ]
+        };
+
+        let appData = JSON.parse(localStorage.getItem('balshaham_data')) || initialData;
+        let currentUser = null;
+        let activeAddType = 'teacher';
+
+        function syncStorage() {
+            localStorage.setItem('balshaham_data', JSON.stringify(appData));
+        }
+
+        // دالة المزامنة الذكية مع ملف مدرستي / نور (Excel / CSV)
+        function syncFromMadrasatiExcel() {
+            const fileInput = document.getElementById('madrasatiFileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('⚠️ يرجى اختيار ملف كشف الطلاب أولاً بصيغة (Excel أو CSV).');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+                    if (!rows || rows.length === 0) {
+                        alert('❌ الملف المرفوع فارغ ولا يحتوي على بيانات.');
+                        return;
+                    }
+
+                    const incomingStudents = [];
+                    const distinctClasses = new Set();
+
+                    rows.forEach((row, idx) => {
+                        const name = row['اسم الطالب'] || row['الاسم'] || row['اسم_الطالب'] || row['الطالب'] || row['Name'] || '';
+                        const role = row['الصف'] || row['الصف الدراسي'] || row['الفصل'] || row['المرحلة'] || 'الصف الابتدائي';
+                        const info = row['معلومات'] || row['ملاحظات'] || row['الحالة'] || 'مسجل رسمياً عبر منصة مدرستي';
+
+                        if (name.trim()) {
+                            incomingStudents.push({
+                                id: Date.now() + idx,
+                                name: name.trim(),
+                                role: role.trim(),
+                                info: info.trim()
+                            });
+                            distinctClasses.add(role.trim());
+                        }
+                    });
+
+                    if (incomingStudents.length === 0) {
+                        alert('❌ لم يتم العثور على عمود يحتوي على (اسم الطالب) داخل الملف.');
+                        return;
+                    }
+
+                    const oldNames = new Set(appData.students.map(s => s.name));
+                    const newNames = new Set(incomingStudents.map(s => s.name));
+
+                    let addedCount = 0;
+                    let removedCount = 0;
+
+                    incomingStudents.forEach(s => {
+                        if (!oldNames.has(s.name)) addedCount++;
+                    });
+
+                    appData.students.forEach(s => {
+                        if (!newNames.has(s.name)) removedCount++;
+                    });
+
+                    appData.students = incomingStudents;
+                    appData.stats.students = incomingStudents.length;
+                    if (distinctClasses.size > 0) {
+                        appData.stats.classes = distinctClasses.size;
+                    }
+
+                    syncStorage();
+                    renderStats();
+                    renderStudents();
+                    loadDashboardInputs();
+
+                    const reportBox = document.getElementById('syncReportBox');
+                    const summary = document.getElementById('syncReportSummary');
+                    reportBox.style.display = 'block';
+                    summary.innerHTML = `
+                        <p>✅ <b>تمت المزامنة بنجاح تام وتحديث الموقع!</b></p>
+                        <div style="margin-top:0.6rem;">
+                            <span class="sync-badge-stat badge-added">➕ إضافة ${addedCount} طالب مستجد</span>
+                            <span class="sync-badge-stat badge-removed">➖ استبعاد ${removedCount} طالب غير مدرج</span>
+                            <span class="sync-badge-stat badge-total">👥 إجمالي الطلاب: ${incomingStudents.length}</span>
+                            <span class="sync-badge-stat badge-total">🏫 الفصول المعتمدة: ${distinctClasses.size}</span>
+                        </div>
+                    `;
+
+                    alert(`🎉 تم بنجاح مزامنة وتحديث ${incomingStudents.length} طالباً وانعكست فوراً على الموقع!`);
+                } catch (err) {
+                    console.error(err);
+                    alert('❌ حدث خطأ أثناء قراءة الملف. تأكد من أن الملف بصيغة إكسل صحيحة.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // تحميل نموذج تجريبي
+        function downloadSampleSheet() {
+            const sampleData = [
+                { "اسم الطالب": "فيصل خالد السبيعي", "الصف": "الصف السادس", "معلومات": "الأول على المدرسة - معدل 99%" },
+                { "اسم الطالب": "ريان أحمد الغامدي", "الصف": "الصف السادس", "معلومات": "المركز الأول في مسابقة القرآن الكريم" },
+                { "اسم الطالب": "عمر ماجد الغامدي", "الصف": "الصف الخامس", "معلومات": "الفائز ببطولة الإلقاء والخطابة" },
+                { "اسم الطالب": "سعود فيصل العمري", "الصف": "الصف الخامس", "معلومات": "بطل مسابقة الرياضيات الذكية" },
+                { "اسم الطالب": "محمد تركي الشهري", "الصف": "الصف الرابع", "معلومات": "فارس الانضباط والسلوك المتميز" },
+                { "اسم الطالب": "عبدالله فهد الزهراني", "الصف": "الصف الرابع", "معلومات": "مبتكر نادي العلوم والذكاء الاصطناعي" },
+                { "اسم الطالب": "يزيد سلطان الحارثي", "الصف": "الصف الثالث", "معلومات": "متميز في القراءة السريعة" },
+                { "اسم الطالب": "نايف عبدالهادي الغامدي", "الصف": "الصف الثاني", "معلومات": "متفوق في الإملاء والخط العربي" }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(sampleData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "كشف الطلاب");
+            XLSX.writeFile(wb, "كشف_طلاب_مدرستي_بالشهم_نموذج_تجريبي.xlsx");
+        }
+
+        // التنقل
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            const targetLink = document.querySelector(`[data-page="${pageId}"]`);
+            if (targetLink) targetLink.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => navigateTo(link.dataset.page));
+        });
+
+        function renderStats() {
+            document.getElementById('statsHolder').innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper stat-students"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info"><h3>${appData.stats.students}+</h3><p>طالباً مسجلاً</p></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper stat-teachers"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="stat-info"><h3>${appData.stats.teachers}</h3><p>معلماً ومربياً</p></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper stat-classes"><i class="fa-solid fa-school"></i></div>
+                    <div class="stat-info"><h3>${appData.stats.classes}</h3><p>فصلاً تعليمياً</p></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper stat-awards"><i class="fa-solid fa-medal"></i></div>
+                    <div class="stat-info"><h3>${appData.stats.awards}</h3><p>جائزة تميز</p></div>
+                </div>
+            `;
+        }
+
+        function renderTeachers() {
+            document.getElementById('teachersList').innerHTML = appData.teachers.map(t => `
+                <div class="modern-card">
+                    <span class="badge-role">معلم</span>
+                    <div class="card-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="card-name">${sanitize(t.name)}</div>
+                    <div class="card-sub">${sanitize(t.role)}</div>
+                    <div class="card-desc">${sanitize(t.info)}</div>
+                    ${t.phone ? `<a href="tel:${t.phone}" class="card-phone"><i class="fa-solid fa-phone"></i> ${sanitize(t.phone)}</a>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderStudents() {
+            document.getElementById('studentsList').innerHTML = appData.students.map(s => `
+                <div class="modern-card">
+                    <span class="badge-role" style="background:rgba(245,158,11,0.1); color:var(--accent);">⭐ متفوق</span>
+                    <div class="card-avatar" style="color:var(--accent);"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="card-name">${sanitize(s.name)}</div>
+                    <div class="card-sub">${sanitize(s.role)}</div>
+                    <div class="card-desc">${sanitize(s.info)}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderPosts() {
+            document.getElementById('postsList').innerHTML = appData.posts.map(p => `
+                <div class="post-card">
+                    <div class="post-meta">
+                        <div class="post-author-box">
+                            <div class="post-avatar">${sanitize(p.author.charAt(0))}</div>
+                            <div>
+                                <h4 style="font-size:0.95rem; font-weight:700;">${sanitize(p.author)}</h4>
+                                <span style="font-size:0.75rem; color:var(--text-muted);">${sanitize(p.grade)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-body">${sanitize(p.content)}</div>
+                    <div class="post-reactions">
+                        <button class="reaction-chip" onclick="likePost(${p.id})">
+                            <i class="fa-solid fa-heart" style="color:#ef4444;"></i> ${p.likes} إعجاب
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function likePost(id) {
+            const post = appData.posts.find(p => p.id === id);
+            if (post) {
+                post.likes++;
+                syncStorage();
+                renderPosts();
+            }
+        }
+
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            const author = document.getElementById('postAuthorInput').value.trim();
+            const grade = document.getElementById('postGradeInput').value;
+            const content = document.getElementById('postContentInput').value.trim();
+            if (!author || !content) return;
+            appData.posts.unshift({ id: Date.now(), author, grade, content, likes: 0 });
+            syncStorage();
+            renderPosts();
+            e.target.reset();
+        }
+
+        function renderGallery(filter = 'all') {
+            const items = filter === 'all' ? appData.gallery : appData.gallery.filter(i => i.cat === filter);
+            document.getElementById('galleryContainer').innerHTML = items.map(img => `
+                <div class="gallery-card">
+                    <img src="${img.img}" alt="${sanitize(img.title)}">
+                    <div class="gallery-overlay"><h4 style="font-weight:700; font-size:1.1rem;">${sanitize(img.title)}</h4></div>
+                </div>
+            `).join('');
+        }
+
+        function filterGallery(category, btn) {
+            document.querySelectorAll('.gallery-filter-chips .filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            renderGallery(category);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value;
+            if (u === 'admin' && p === 'admin123') {
+                currentUser = { name: 'مدير المدرسة', role: 'admin' };
+                document.getElementById('dashNavItem').style.display = 'block';
+                document.getElementById('userAuthContainer').innerHTML = `
+                    <span style="font-weight:700; color:var(--primary); font-size:0.9rem;">أهلاً، سعادة المدير</span>
+                    <button class="btn-modern btn-outline" style="padding:0.4rem 0.8rem;" onclick="logout()">خروج</button>
+                `;
+                closeModal('authModal');
+                navigateTo('dashboard');
+                loadDashboardInputs();
+            } else {
+                alert('عذراً، اسم المستخدم أو كلمة المرور غير صحيحة.');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            location.reload();
+        }
+
+        function openAddPerson(type) {
+            activeAddType = type;
+            document.getElementById('addPersonTitle').textContent = type === 'teacher' ? 'تسجيل معلم جديد بالمدرسة' : 'إضافة طالب متميز';
+            document.getElementById('newPersonRoleLabel').textContent = type === 'teacher' ? 'التخصص الدراسي:' : 'الصف الدراسي:';
+            openModal('addPersonModal');
+        }
+
+        function handleAddPersonSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('newPersonName').value.trim();
+            const role = document.getElementById('newPersonRole').value.trim();
+            const phone = document.getElementById('newPersonPhone').value.trim();
+            const info = document.getElementById('newPersonInfo').value.trim();
+
+            if (activeAddType === 'teacher') {
+                appData.teachers.unshift({ id: Date.now(), name, role, info: info || 'معلم بالمدرسة', phone });
+                renderTeachers();
+                alert('✅ تم تسجيل المعلم بنجاح وإضافته لقائمة المعلمين');
+                navigateTo('teachers');
+            } else {
+                appData.students.unshift({ id: Date.now(), name, role, info: info || 'طالب متميز' });
+                renderStudents();
+                navigateTo('students');
+            }
+            syncStorage();
+            closeModal('addPersonModal');
+            e.target.reset();
+        }
+
+        function loadDashboardInputs() {
+            document.getElementById('editStudents').value = appData.stats.students;
+            document.getElementById('editTeachers').value = appData.stats.teachers;
+            document.getElementById('editClasses').value = appData.stats.classes;
+        }
+
+        function saveDashboardStats() {
+            appData.stats.students = Number(document.getElementById('editStudents').value);
+            appData.stats.teachers = Number(document.getElementById('editTeachers').value);
+            appData.stats.classes = Number(document.getElementById('editClasses').value);
+            syncStorage();
+            renderStats();
+            alert('تم حفظ البيانات بنجاح!');
+        }
+
+        // تشغيل وتهيئة الموقع
+        applyRandomMotivationalQuote();
+        renderStats();
+        renderTeachers();
+        renderStudents();
+        renderStrategies();
+        renderPosts();
+        renderGallery();
+    </script>
+</body>
+</html>
